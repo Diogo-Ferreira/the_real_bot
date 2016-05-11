@@ -24,7 +24,7 @@ class Pendu():
 
 if __name__ == "__main__":
     pendu = Pendu("tata",10)
-    while pendu.left_guesses > 0:
+    while pendu.left_guesses > 0 and not pendu.is_game_won():
         user_in = input("Entrer une lettre : ")
         pendu.is_letter_in_word(user_in)
         board = pendu.word_dict
@@ -35,3 +35,7 @@ if __name__ == "__main__":
             else:
                 out += " _ "
         print(out)
+    if pendu.is_game_won():
+        print("Bravo ! Vous avez gagné !")
+    else:
+        print("Dommage :( peut-être une prochaine fois")
