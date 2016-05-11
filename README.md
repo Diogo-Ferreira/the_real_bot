@@ -1,6 +1,20 @@
-# ThePendu
-slack bot qui vous permettera de joueur au pendu.
+# Bot Pendu
 
-#Members
-* Aurélie Debrot
-* Ferreira Venancio Diogo
+## Introduction
+Ce bot permet de jouer au jeu du pendu.
+
+## Fonctionnalitées
+* Début de partie par la conversation
+* Affichage du pendu actuel
+* Eventuellement avoir des catégories de mots
+* Affichage d'un help
+
+
+## Commandes
+
+**Commencer une partie :** ex. Commence une partie
+
+**Choisir une catégoreie : ** ex. dans la catégorie geek
+
+**Arrêter la partie : ** ex. je n'ais plus envie de jouer | c'est de la merde | etc...
+
