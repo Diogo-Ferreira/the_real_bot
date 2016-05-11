@@ -1,5 +1,5 @@
-# the_real_bot
-slack bot in python
+# ThePendu
+slack bot qui vous permettera de joueur au pendu.
 
 #Members
 * Aurélie Debrot
