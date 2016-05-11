@@ -14,7 +14,7 @@ Ce bot permet de jouer au jeu du pendu.
 
 **Commencer une partie :** ex. Commence une partie
 
-**Choisir une catégoreie : ** ex. dans la catégorie geek
+**Choisir une catégoreie :** ex. dans la catégorie geek
 
-**Arrêter la partie : ** ex. je n'ais plus envie de jouer | c'est de la merde | etc...
+**Arrêter la partie :** ex. je n'ais plus envie de jouer | c'est de la merde | etc...
 
