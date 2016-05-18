@@ -9,7 +9,7 @@ class TestPendu(TestCase):
         pendu = Pendu("tata",10)
         pendu.check_letter("t")
         pendu.check_letter("a")
-        self.assertTrue(pendu.is_game_won())
+        self.assertTrue(False)
 
         #Test défaite
         pendu = Pendu("tata",10)
