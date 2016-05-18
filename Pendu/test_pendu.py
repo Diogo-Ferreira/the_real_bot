@@ -17,3 +17,9 @@ class TestPendu(TestCase):
             pendu.check_letter(i)
 
         self.assertFalse(pendu.is_game_won())
+
+    def test_max_guess_not_decremented_after_good_guess(self):
+        pendu = Pendu("bonjour",12)
+        pendu.check_letter("b")
+        pendu.check_letter("j")
+        self.assertEquals(12,pendu.left_guesses)
