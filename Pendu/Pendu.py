@@ -1,13 +1,15 @@
 
 
 class Pendu():
+    """Cette classe gère un jeu de pendu (base sans affichage)"""
 
     def __init__(self,word,max_guesses):
         self.word = word
         self.left_guesses = max_guesses
         self.word_dict = {self.word[i]: False for i in range(len(self.word))}
 
-    def is_letter_in_word(self, letter):
+    def check_letter(self, letter):
+        """Contrôle si la lettre est présente dans le mot, décrémente le nombre d'essaie si nécéssaire"""
         if len(letter) is 1 and self.left_guesses > 0:
             self.left_guesses -= 1
             if letter in self.word:
@@ -23,10 +25,10 @@ class Pendu():
 
 
 if __name__ == "__main__":
-    pendu = Pendu("tata",10)
+    pendu = Pendu("travis",10)
     while pendu.left_guesses > 0 and not pendu.is_game_won():
         user_in = input("Entrer une lettre : ")
-        pendu.is_letter_in_word(user_in)
+        pendu.check_letter(user_in)
         board = pendu.word_dict
         out = ""
         for letter in pendu.word:
