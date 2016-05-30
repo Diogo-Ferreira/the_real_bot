@@ -18,7 +18,7 @@ class PenduController:
             return self._start_game()
 
     def _load_word(self,category = "gen"):
-        file_name = "words/" + category + ".txt"
+        file_name = os.path.join("words", category + ".txt")
         if os.path.isfile(file_name):
             with open(file_name,"r") as file_handle:
                 return self._choose_random_word(file_handle.read().split("\n"))
