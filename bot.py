@@ -3,15 +3,19 @@ import asyncio
 import json
 import signal
 
+from the_real_bot.Pendu.PenduController import PenduController
+from the_real_bot.secrets import TOKEN
+
 import aiohttp
 
 import websockets
-import secrets
+import json
 
 DEBUG = True
 
 RUNNING = True
 
+users = {}
 
 async def producer():
     """Produce a ping message every 10 seconds."""
@@ -21,7 +25,13 @@ async def producer():
 
 async def consumer(message):
     """Consume the message by printing them."""
-    print(message)
+   # print(message)
+    message = json.loads(message)
+    if message["type"] == "message":
+        if message["user"] not in users:
+            users[message["user"]]= PenduController()
+            print("Nouvel utilisateur")
+        print(users[message["user"]].interpret_user_input(message["text"]))
 
 
 async def bot(token):
@@ -66,6 +76,6 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
 
     loop.set_debug(DEBUG)
-    loop.add_signal_handler(signal.SIGINT, stop)
+    #loop.add_signal_handler(signal.SIGINT, stop)
     loop.run_until_complete(bot(TOKEN))
     loop.close()
