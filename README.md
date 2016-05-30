@@ -1,3 +1,4 @@
+[img]:https://travis-ci.org/Diogo-Ferreira/the_real_bot.svg?branch=master
 # Bot Pendu
 
 ## Introduction
