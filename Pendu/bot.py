@@ -6,8 +6,8 @@ import signal
 import aiohttp
 import websockets
 
-from Pendu.PenduController import PenduController
-from Pendu.secrets import TOKEN
+from PenduController import PenduController
+from secrets import TOKEN
 
 DEBUG = True
 
@@ -24,7 +24,7 @@ async def producer():
     #Are they any messages to process ?
     if len(toSendQueue) > 0:
         msg = toSendQueue.pop()
-        out = {"user": msg["user"],"text":msg["text"],"type":"message","channel":msg["channel"]}
+        out = {"user": msg["user"],"text":msg["text"],"type":"message","channel":msg["channel"],"unfurl_links": "true", "unfurl_media": "true","do_not_unfurl_links":"false","mrkdwn": "false"}
         print("OUT : " + str(out))
         return json.dumps(out)
     else:
@@ -34,15 +34,15 @@ async def producer():
 
 
 async def consumer(message):
-    """Consume the message by interpeting them"""
-    print("IN" + str(message))
+    """Consume the message by interpeting them with the penducontroller class"""
+
+    print("OUT : " + str(message))
 
     #message to dict
     message = json.loads(message)
 
     #is the message interesting for us ?
-    if "type" in message and message["type"] == "message":
-
+    if "user" in message and "type" in message and message["type"] == "message":
         #new user ?
         if message["user"] not in users:
             users[message["user"]] = {"channel" : message["channel"],"controller" : PenduController()}
@@ -53,7 +53,7 @@ async def consumer(message):
         #Pass it to the producer
         toSendQueue.insert(0, {
                                "user" : message["user"],
-                               "text" : out,
+                               "text" : str(out),
                                "channel" : users[message["user"]]["channel"]
                            })
 
