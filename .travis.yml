@@ -4,5 +4,5 @@ python:
 # command to install dependencies
 #install: "pip install -r requirements.txt"
 # command to run tests
-script: cd Pendu;python3 -m unittest test_pendu.TestPendu;python3 -m unittest test_pendu_controller.TestPenduController
+script: cd Pendu && python3 -m unittest test_pendu.TestPendu && python3 -m unittest test_pendu_controller.TestPenduController
 
