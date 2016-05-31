@@ -5,17 +5,31 @@ import random
 
 class PenduController:
     """Classe de gestion du jeu de pendu (Interpretation des commandes utilisateurs)"""
-    def __init__(self):
+    def __init__(self,word = None):
         self.game_on = False
+        self.word = word
 
     def interpret_user_input(self,user_input):
         """Interprète l'entrée de l'utilisateur, pour savoir ce qu'il veut"""
-        if self.game_on:
-            return self._play_game(user_input)
+
+        if user_input == "aide moi":
+            return "affichage aide..."
         elif user_input == "fin de partie":
-            pass
-        elif user_input == "nouvelle partie" and not self.game_on:
-            return self._start_game()
+            self.game_on = False
+            return "Bye Bye"
+        elif self.game_on:
+            return self._play_game(user_input)
+        elif "nouvelle partie" in user_input and not self.game_on:
+
+            #Categorie spécifié ?
+            if(len(user_input) > len("nouevelle partie")):
+                category = user_input.split(" ")[-1]
+                return self._start_game(category)
+            else:
+                return self._start_game()
+
+        else:
+            return "je ne te comprends pas, consulte l'aide en m'écrivant \"aide moi\""
 
     def _load_word(self,category = "gen"):
         file_name = os.path.join(os.path.dirname(__file__),"words", category + ".txt")
@@ -31,12 +45,13 @@ class PenduController:
 
     def _start_game(self,category="gen"):
 
-        word = self._load_word(category)
+        if self.word is None:
+            self.word = self._load_word(category)
 
-        if word is not False:
-            self.pendu = Pendu(word,10)
+        if self.word is not False:
+            self.pendu = Pendu(self.word,10)
             self.game_on = True
-            return "La partie à commencer !"
+            return "La partie a commencé !"
         else:
             return "Catégorie non trouvé"
 
@@ -54,9 +69,13 @@ class PenduController:
             return "bravo vous avez trouvé !"
         elif self.pendu.left_guesses > 0:
             return out
+            #return self.add_image(self.pendu.left_guesses,10,out)
         else:
             self.game_on = False
             return "Désolé, vous avez perdu, le mot était " + self.pendu.word
+
+    def add_image(self,left_guesses,max_guesses,out):
+        return "http://diogoferreira.ch/pendu/" + str(int(max_guesses+1 - left_guesses)) + ".png \n" + out
 
 
 if __name__ == "__main__":
