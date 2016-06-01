@@ -13,9 +13,7 @@ Ce bot permet de jouer au jeu du pendu.
 
 ## Commandes
 
-**Commencer une partie :** ex. Commence une partie
+**Commencer une partie :** ex. nouvelle partie [category]
 
-**Choisir une catégoreie :** ex. dans la catégorie geek
-
-**Arrêter la partie :** ex. je n'ais plus envie de jouer | c'est nul | etc...
+**Arrêter la partie :** fin de partie
 
