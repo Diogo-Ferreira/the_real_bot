@@ -22,7 +22,7 @@ class PenduController:
         elif "nouvelle partie" in user_input and not self.game_on:
 
             #Categorie spécifié ?
-            if(len(user_input) > len("nouevelle partie")):
+            if len(user_input) > len("nouvelle partie"):
                 category = user_input.split(" ")[-1]
                 return self._start_game(category)
             else:
@@ -56,6 +56,16 @@ class PenduController:
             return "Catégorie non trouvé"
 
     def _play_game(self,user_input):
+
+        #Si le joueur devine le mot
+        if len(user_input) > 1:
+            if user_input == self.pendu.word:
+                self.game_on = False
+                return "vous avez gagné "
+            else:
+                self.pendu.left_guesses -= 1
+                return "non, ce n'est pas le mot !"
+
         self.pendu.check_letter(user_input)
         board = self.pendu.word_dict
         out = ""
@@ -63,13 +73,13 @@ class PenduController:
             if board[letter]:
                 out += " " +letter + " "
             else:
-                out += " _ "
+                out += " ˽ "
         if self.pendu.is_game_won():
             self.game_on = False
             return "bravo vous avez trouvé !"
         elif self.pendu.left_guesses > 0:
             return out
-            #return self.add_image(self.pendu.left_guesses,10,out)
+            #+ " il vous reste " + str(self.pendu.left_guesses) + " essaies !"
         else:
             self.game_on = False
             return "Désolé, vous avez perdu, le mot était " + self.pendu.word

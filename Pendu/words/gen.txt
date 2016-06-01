@@ -1,1 +1,9 @@
-BONJOUR
+bonjour
+aurevoir
+salut
+hearc
+python
+java
+manga
+series
+films

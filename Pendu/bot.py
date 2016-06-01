@@ -16,7 +16,7 @@ RUNNING = True
 #Dict of users with the channel, PenduController and user name as key
 users = {}
 
-#Messages to pass to the producer, TODO: check if the data can't be corrupted with async struct
+#Messages to pass to the producer, TODO: use asyncio queue
 toSendQueue = []
 
 async def producer():
@@ -24,8 +24,11 @@ async def producer():
     #Are they any messages to process ?
     if len(toSendQueue) > 0:
         msg = toSendQueue.pop()
-        out = {"user": msg["user"],"text":msg["text"],"type":"message","channel":msg["channel"],"unfurl_links": "true", "unfurl_media": "true","do_not_unfurl_links":"false","mrkdwn": "false"}
-        print("OUT : " + str(out))
+        out = {"user": msg["user"],"text":msg["text"],"channel":msg["channel"],"mrkdwn": False,"type":"message","attachments": [{
+                   "fallback": "image of pendu",
+                   "image_url": "http://diogoferreira.ch/pendu/1.png"
+               }]}
+        #print("OUT : " + str(out))
         return json.dumps(out)
     else:
         #If not, send a ping, to keep the connection alive
@@ -36,7 +39,7 @@ async def producer():
 async def consumer(message):
     """Consume the message by interpeting them with the penducontroller class"""
 
-    print("OUT : " + str(message))
+    print("IN : " + str(message))
 
     #message to dict
     message = json.loads(message)
@@ -48,7 +51,7 @@ async def consumer(message):
             users[message["user"]] = {"channel" : message["channel"],"controller" : PenduController()}
 
         #Pendu logic, should it be here ? Maybe check if it's not better in the producer
-        out = users[message["user"]]["controller"].interpret_user_input(message["text"])
+        out = users[message["user"]]["controller"].interpret_user_input(message["text"].lower())
 
         #Pass it to the producer
         toSendQueue.insert(0, {
@@ -84,8 +87,8 @@ async def bot(token):
                 await consumer(message)
 
             if producer_task in done:
-                print("tick")
                 message = producer_task.result()
+                print(message)
                 await ws.send(message)
 
 
