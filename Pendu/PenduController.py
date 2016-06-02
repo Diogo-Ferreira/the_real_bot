@@ -77,7 +77,7 @@ class PenduController:
             self.game_on = False
             return "bravo vous avez trouvé !"
         elif self.pendu.left_guesses > 0:
-            return (out)
+            return out
             #+ " il vous reste " + str(self.pendu.left_guesses) + " essaies !"
         else:
             self.game_on = False
