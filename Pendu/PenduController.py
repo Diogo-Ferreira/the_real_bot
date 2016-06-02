@@ -77,14 +77,15 @@ class PenduController:
             self.game_on = False
             return "bravo vous avez trouvé !"
         elif self.pendu.left_guesses > 0:
-            return out
+            return (out)
             #+ " il vous reste " + str(self.pendu.left_guesses) + " essaies !"
         else:
             self.game_on = False
             return "Désolé, vous avez perdu, le mot était " + self.pendu.word
 
-    def add_image(self,left_guesses,max_guesses,out):
-        return "http://diogoferreira.ch/pendu/" + str(int(max_guesses+1 - left_guesses)) + ".png \n" + out
+    def get_current_image(self):
+        if self.game_on:
+            return "http://diogoferreira.ch/pendu/" + str(int(self.pendu.max_guesses - self.pendu.left_guesses+1)) + ".png \n"
 
 
 if __name__ == "__main__":

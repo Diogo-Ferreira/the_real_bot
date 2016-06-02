@@ -6,6 +6,7 @@ class Pendu():
     def __init__(self,word,max_guesses):
         self.word = word
         self.left_guesses = max_guesses
+        self.max_guesses = max_guesses
         #faire plus simple
         self.word_dict = {self.word[i]: False for i in range(len(self.word))}
 

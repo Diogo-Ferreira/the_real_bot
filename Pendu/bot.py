@@ -2,10 +2,8 @@
 import asyncio
 import json
 import signal
-
-import aiohttp
 import websockets
-
+import aiohttp
 from PenduController import PenduController
 from secrets import TOKEN
 
@@ -31,31 +29,34 @@ async def processMessage(message):
         if message["user"] not in users:
             users[message["user"]] = PenduController()
 
-        # Pendu logic, should it be here ? Maybe check if it's not better in the producer
+        # Pendu logic
         out = users[message["user"]].interpret_user_input(message["text"].lower())
 
-        #Send message back to user
-        await api_call("chat.postMessage", {
-            "user": message["user"],
-            "text": out,
-            "channel": message["channel"],
-            "mrkdwn": False,
-            "type": "message",
-            "attachments":[#Attachements do not work :(
+        await api_call(
+            method="chat.postMessage",
+            user=message["user"],
+            text=out,
+            channel=message["channel"],
+            type="message",
+            attachments=[
                 {
                     "fallback":"test",
-                    "image_url":"http://diogoferreira.ch/pendu/4.png"
+                    "image_url": users[message["user"]].get_current_image()
                 }
-            ],
+            ]
+        )
 
-        })
 
+async def api_call(method, **kwargs):
+    # JSON encode any sub-structure...
+    for k, w in kwargs.items():
+        # keep str as is.
+        if not isinstance(w, (bytes, str)):
+            kwargs[k] = json.dumps(w)
 
-async def api_call(method, data=None, token=TOKEN):
-    """Slack API call."""
     with aiohttp.ClientSession() as session:
-        form = aiohttp.FormData(data or {})
-        form.add_field('token', token)
+        form = aiohttp.FormData(kwargs or {})
+        form.add_field('token', TOKEN)
         async with session.post('https://slack.com/api/{0}'.format(method),
                                 data=form) as response:
             assert 200 == response.status, ('{0} with {1} failed.'
@@ -63,7 +64,7 @@ async def api_call(method, data=None, token=TOKEN):
             return await response.json()
 
 
-async def bot(token):
+async def bot():
     """Create a bot that joins Slack."""
     rtm = await api_call("rtm.start")
     async with websockets.connect(rtm["url"]) as ws:
@@ -83,5 +84,5 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.set_debug(DEBUG)
     loop.add_signal_handler(signal.SIGINT, stop)
-    loop.run_until_complete(bot(TOKEN))
+    loop.run_until_complete(bot())
     loop.close()
