@@ -4,22 +4,25 @@ import json
 import signal
 import websockets
 import aiohttp
-from PenduController import PenduController
-from secrets import TOKEN
+from PenduController import *
+from secrets import *
 
-class botPendu:
-
-
-
+class bot:
+    """
+    Communication slack pour le bot pendu
+    """
     async def processMessage(self,message):
-        """Consume the message by interpeting them with the penducontroller class"""
+        """
+        Traite le message reçu de l'utilisateur
+        :param message: message utilisateur
+        """
 
         print("IN : " + str(message))
 
         # message to dict
         message = json.loads(message)
 
-        # is the message interesting for us ?
+        # message intéréssant pour nous ?
         if "user" in message and "type" in message and message["type"] == "message":
             # new user ?
             if message["user"] not in self.users:
@@ -36,7 +39,7 @@ class botPendu:
                 type="message",
                 attachments=[
                     {
-                        "fallback":"test",
+                        "fallback":"image pendu",
                         "image_url": self.users[message["user"]].get_current_image()
                     }
                 ]
@@ -44,6 +47,12 @@ class botPendu:
 
 
     async def api_call(self,method, **kwargs):
+        """
+        Communication avec slack via websockets
+        :param method:
+        :param kwargs:
+        :return:
+        """
         # JSON encode any sub-structure...
         for k, w in kwargs.items():
             # keep str as is.
@@ -52,7 +61,7 @@ class botPendu:
 
         with aiohttp.ClientSession() as session:
             form = aiohttp.FormData(kwargs or {})
-            form.add_field('token', TOKEN)
+            form.add_field('token', self.TOKEN)
             async with session.post('https://slack.com/api/{0}'.format(method),
                                     data=form) as response:
                 assert 200 == response.status, ('{0} with {1} failed.'
@@ -60,33 +69,34 @@ class botPendu:
                 return await response.json()
 
 
-    async def bot(self):
-        """Create a bot that joins Slack."""
+    async def start(self):
+        """
+        init de la communication avec slack
+        :return:
+        """
         rtm = await self.api_call("rtm.start")
         async with websockets.connect(rtm["url"]) as ws:
             while self.RUNNING:
                 message = await ws.recv()
                 asyncio.ensure_future(self.processMessage(message))
 
-
     def stop(self):
-        """Gracefully stop the bot."""
-        global RUNNING
-        RUNNING = False
+        """
+        Arrête la communication
+        """
+        self.RUNNING = False
         print("Stopping... closing connections.")
 
-
-    def __init__(self):
+    def __init__(self,TOKEN):
+        self.TOKEN = TOKEN
         self.DEBUG = True
-
         self.RUNNING = True
-        # Dict of users with the channel, PenduController and user name as key
         self.users = {}
         loop = asyncio.get_event_loop()
         loop.set_debug(self.DEBUG)
-        #loop.add_signal_handler(signal.SIGINT, self.stop)
-        loop.run_until_complete(self.bot())
+        loop.add_signal_handler(signal.SIGINT, self.stop)
+        loop.run_until_complete(self.start())
         loop.close()
 
 if __name__ == "__main__":
-    botPendu()
+    bot(TOKEN)
