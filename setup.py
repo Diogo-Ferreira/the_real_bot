@@ -10,7 +10,8 @@ setup(
     packages=['Pendu'],
     install_requires=(
         'aiohttp',
-        'asyncio'
+        'asyncio',
+        'websockets'
     ),
     extras_requires={
         'doc': ('Sphinx','sphinx_rtd_theme'),
