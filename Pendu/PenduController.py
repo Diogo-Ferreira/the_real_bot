@@ -45,7 +45,7 @@ class PenduController:
             self.word = self._load_word(category)
 
         if self.word is not False:
-            self.pendu = Pendu(self.word,10)
+            self.pendu = Pendu(self.word, 11)
             self.game_on = True
             return "La partie a commencé !"
         else:
@@ -53,27 +53,19 @@ class PenduController:
 
     def _play_game(self,user_input):
 
-        #Si le joueur devine le mot, TODO :à mettre dans Pendu par la suite
-        if len(user_input) > 1:
-            if user_input == self.pendu.word:
-                self.game_on = False
-                return "vous avez gagné "
-            else:
-                self.pendu.left_guesses -= 1
-                return "non, ce n'est pas le mot !"
+        #Si le joueur devine le mot
+        if len(user_input) > 1 and self.pendu.check_word(user_input):
+            self.game_on = False
+            return "vous avez gagné !"
+        elif len(user_input) > 1:
+            return "non, ce n'est pas le mot"
 
         self.pendu.check_letter(user_input)
-        board = self.pendu.word_dict
-        out = ""
-        for letter in self.pendu.word:
-            if board[letter]:
-                out += " {0} ".format(letter)
-            else:
-                out += " ˽ "
+        out = self.pendu.show()
         if self.pendu.is_game_won():
             self.game_on = False
             return "bravo vous avez trouvé !"
-        elif self.pendu.left_guesses > 0:
+        elif self.pendu.nb_guesses > 0:
             return out
         else:
             self.game_on = False
@@ -81,11 +73,9 @@ class PenduController:
 
     def get_current_image(self):
         if self.game_on:
-            return "http://diogoferreira.ch/pendu/{0}.png".format(self.nb_guesses)
+            return "http://diogoferreira.ch/pendu/{0}.png".format(self.pendu.nb_false_tries)
 
-    @property
-    def nb_guesses(self):
-        return self.pendu.max_guesses - self.pendu.left_guesses + 1
+
 
 
 if __name__ == "__main__":

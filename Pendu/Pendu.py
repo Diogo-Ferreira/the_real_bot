@@ -7,39 +7,47 @@ class Pendu():
         self.word = word
         self.left_guesses = max_guesses
         self.max_guesses = max_guesses
-        #faire plus simple
-        self.word_dict = {self.word[i]: False for i in range(len(self.word))}
+        self.guesses = set()
 
     def check_letter(self, letter):
-        """Contrôle si la lettre est présente dans le mot, décrémente le nombre d'essaie si nécéssaire"""
-        if len(letter) is 1 and self.left_guesses > 0:
-            if letter in self.word:
-                self.word_dict[letter] = True
-            else:
-                self.left_guesses -= 1
+        if letter not in self.guesses:
+            self.guesses.add(letter)
+
+    def check_word(self,word):
+        if word == self.word:
+            return True
+        else:
+            self.left_guesses -= 1
+            return False
 
     def is_game_won(self):
-        for key, value in self.word_dict.items():
-            if not value:
-                return False
-        return True
+        return len(set(self.word) - self.guesses) == 0
 
+    def show(self):
+        out = []
+        for w in self.word:
+            if w in self.guesses:
+                out.append(" {0} ".format(w))
+            else:
+                out.append(" ˽ ")
+        return ''.join(out)
 
+    @property
+    def nb_guesses(self):
+        return self.max_guesses - self.nb_false_tries
+
+    @property
+    def nb_false_tries(self):
+        return len(self.guesses - set(self.word))
 
 
 if __name__ == "__main__":
     pendu = Pendu("travis",10)
-    while pendu.left_guesses > 0 and not pendu.is_game_won():
+    while pendu.nb_guesses > 0 and not pendu.is_game_won():
         user_in = input("Entrer une lettre : ")
         pendu.check_letter(user_in)
-        board = pendu.word_dict
-        out = ""
-        for letter in pendu.word:
-            if board[letter]:
-                out += " {0} ".format(letter)
-            else:
-                out += " _ "
-        print(out)
+        print(pendu.show())
+        print("il vous reste " + str(pendu.nb_guesses))
     if pendu.is_game_won():
         print("Bravo ! Vous avez gagné !")
     else:
