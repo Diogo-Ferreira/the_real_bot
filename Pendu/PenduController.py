@@ -11,7 +11,6 @@ class PenduController:
 
     def interpret_user_input(self,user_input):
         """Interprète l'entrée de l'utilisateur, pour savoir ce qu'il veut"""
-
         if user_input == "aide moi":
             return "affichage aide..."
         elif user_input == "fin de partie":
@@ -20,19 +19,17 @@ class PenduController:
         elif self.game_on:
             return self._play_game(user_input)
         elif "nouvelle partie" in user_input and not self.game_on:
-
             #Categorie spécifié ?
             if len(user_input) > len("nouvelle partie"):
                 category = user_input.split(" ")[-1]
                 return self._start_game(category)
             else:
                 return self._start_game()
-
         else:
             return "je ne te comprends pas, consulte l'aide en m'écrivant \"aide moi\""
 
     def _load_word(self,category = "gen"):
-        file_name = os.path.join(os.path.dirname(__file__),"words", category + ".txt")
+        file_name = os.path.join(os.path.dirname(__file__),"words", "{0}.txt".format(category))
         if os.path.isfile(file_name):
             with open(file_name,"r") as file_handle:
                 return self._choose_random_word(file_handle.read().split("\n"))
@@ -56,7 +53,7 @@ class PenduController:
 
     def _play_game(self,user_input):
 
-        #Si le joueur devine le mot
+        #Si le joueur devine le mot, TODO :à mettre dans Pendu par la suite
         if len(user_input) > 1:
             if user_input == self.pendu.word:
                 self.game_on = False
@@ -70,7 +67,7 @@ class PenduController:
         out = ""
         for letter in self.pendu.word:
             if board[letter]:
-                out += " " +letter + " "
+                out += " {0} ".format(letter)
             else:
                 out += " ˽ "
         if self.pendu.is_game_won():
@@ -78,14 +75,17 @@ class PenduController:
             return "bravo vous avez trouvé !"
         elif self.pendu.left_guesses > 0:
             return out
-            #+ " il vous reste " + str(self.pendu.left_guesses) + " essaies !"
         else:
             self.game_on = False
-            return "Désolé, vous avez perdu, le mot était " + self.pendu.word
+            return "Désolé, vous avez perdu, le mot était {0}".format(self.pendu.word)
 
     def get_current_image(self):
         if self.game_on:
-            return "http://diogoferreira.ch/pendu/" + str(int(self.pendu.max_guesses - self.pendu.left_guesses+1)) + ".png \n"
+            return "http://diogoferreira.ch/pendu/{0}.png".format(self.nb_guesses)
+
+    @property
+    def nb_guesses(self):
+        return self.pendu.max_guesses - self.pendu.left_guesses + 1
 
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ if __name__ == "__main__":
         out = ""
         for letter in pendu.word:
             if board[letter]:
-                out += letter +" "
+                out += " {0} ".format(letter)
             else:
                 out += " _ "
         print(out)
