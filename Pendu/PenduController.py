@@ -21,7 +21,7 @@ class PenduController:
         if user_input == "aide moi":
             return "Pour commencer une partie tapez : nouvelle partie \n" \
                    "Vous pouvez faire suivre cette commande d'une catégorie de votre choix\n" \
-                   "Les catégories disponibles sont les suivants : gen (catégorie par défaut)\n" \
+                   "Les catégories disponibles sont les suivants : gen (catégorie par défaut), geek, series\n" \
                    "Pour terminer une partie tapez : fin de partie\n" \
                    "Une fois que la partie a commencé tapez la lettre de votre choix\n" \
                    "Vous pouvez taper un mot en entier si vous pensez l'avoir devnié."
